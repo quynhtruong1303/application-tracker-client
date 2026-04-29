@@ -1,6 +1,8 @@
 import {  useState, useEffect } from 'react'
 import { apiFetch } from '../../api/client'
 import KanbanColumn from './KanbanColumn'
+import AddApplicationModal from '../modals/AddApplicationModal'
+import EditApplicationModal from '../modals/EditApplicationModal'
 
 // The four columns in order
 const STATUSES = ['Applied', 'Interviewing', 'Offered', 'Rejected']
@@ -9,6 +11,9 @@ export default function KanbanBoard() {
   const [applications, setApplications] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [showAddModal, setShowAddModal] = useState(false)
+  // Tracks which application is open in the edit modal (null if none)
+  const [selectedApp, setSelectedApp] = useState(null)
 
   // Fetch all applications on mount
   useEffect(() => {
@@ -43,20 +48,70 @@ export default function KanbanBoard() {
     }
   }
 
+  // Adds the newly created application to the local state without refetching
+  function handleAdd(newApp) {
+    setApplications(prev => [...prev, newApp])
+  }
+
+  // Replaced the old application in state with the updated one
+  function handleUpdate(updatedApp) {
+    setApplications(prev =>
+      prev.map(app => app._id === updatedApp._id ? updatedApp : app)
+    )
+  }
+
+  // Removes the application from the local state
+  function handleDelete(deletedId) {
+    setApplications(prev => prev.filter(app => app._id !== deletedId))
+  }
+
   if (loading) return <p className='text-gray-400 text-sm'>Loading...</p>
   if (error) return <p className='text-red-500 text-sm'>Error: {error}</p>
 
   return (
-    <div className='flex gap-4 overflow-x-auto pb-4'>
-      {STATUSES.map(status => (
-        <KanbanColumn
-          key={status}
-          status={status}
-          // Filter applciaitons belonging to this column
-          applications={applications.filter(app => app.status === status)}
-          onDrop={handleDrop}
-        />
-      ))}
-    </div>
+    <>
+        {/* Toolbar */}
+        <div className='flex justify-between items-center mb-6'>
+            <h2 className='text-xl font-semibold text-[#1a1a2e]'>My Applications</h2>
+            <button
+                onClick={() => setShowAddModal(true)}
+                className='bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium px-5 py-2.5 rounded-full transition-colors'
+            >
+                + Add Application
+            </button>
+        </div>
+
+        {/* Kanban Columns */}
+        <div className='flex gap-4 overflow-x-auto pb-4'>
+            {STATUSES.map(status => (
+                <KanbanColumn
+                key={status}
+                status={status}
+                // Filter applciaitons belonging to this column
+                applications={applications.filter(app => app.status === status)}
+                onDrop={handleDrop}
+                onCardClick={setSelectedApp} // Open edit modal when a card is clicked
+                />
+            ))}
+        </div>
+
+        {/* Add Application Modal */}
+        {showAddModal && (
+            <AddApplicationModal
+                onClose={() => setShowAddModal(false)}
+                onAdd={handleAdd}
+            />
+        )}
+
+        {/* Edit Application Modal */}
+        {selectedApp && (
+            <EditApplicationModal
+                application={selectedApp}
+                onClose={() => setSelectedApp(null)}
+                onUpdate={handleUpdate}
+                onDelete={handleDelete}
+            />
+        )}
+    </>
   )
 }

@@ -8,7 +8,7 @@ const COLUMN_STYLES = {
     Rejected: { header: 'bg-red-400', bg: 'bg-red-50', dot: 'bg-red-400' },
 }
 
-export default function KanbanColumn({ status, applications, onDrop}) {
+export default function KanbanColumn({ status, applications, onDrop, onCardClick }) {
     const styles = COLUMN_STYLES[status]
 
     // Allow drop by preventing the default dragover behavior
@@ -41,7 +41,7 @@ export default function KanbanColumn({ status, applications, onDrop}) {
                     <p className='text-xs text-gray-400 text-center mt-4'>No applications</p>
                 ) : (
                     applications.map(app => (
-                        <ApplicationCard key={app._id} application={app} />
+                        <ApplicationCard key={app._id} application={app} onClick={() => onCardClick(app)} />
                     ))
                 )}
             </div>
