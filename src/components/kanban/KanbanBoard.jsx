@@ -3,6 +3,8 @@ import { apiFetch } from '../../api/client'
 import KanbanColumn from './KanbanColumn'
 import AddApplicationModal from '../modals/AddApplicationModal'
 import EditApplicationModal from '../modals/EditApplicationModal'
+import useMediaQuery from '../../hooks/useMediaQuery'
+import MobileBoard from './MobileBoard'
 
 // The four columns in order
 const STATUSES = ['Applied', 'Interviewing', 'Offered', 'Rejected']
@@ -14,6 +16,8 @@ export default function KanbanBoard() {
   const [showAddModal, setShowAddModal] = useState(false)
   // Tracks which application is open in the edit modal (null if none)
   const [selectedApp, setSelectedApp] = useState(null)
+
+  const isMobile = useMediaQuery('(max-width: 640px)')
 
   // Fetch all applications on mount
   useEffect(() => {
@@ -90,8 +94,15 @@ export default function KanbanBoard() {
             </button>
         </div>
 
-        {/* Kanban Columns */}
-        <div className='flex gap-4 overflow-x-auto pb-4'>
+        {/* Kanban layout - columns on desktop, drawers on mobile */}
+        {isMobile ? (
+          <MobileBoard
+            applications={applications}
+            onCardClick={setSelectedApp}
+            onMove={handleDrop}
+          />
+        ) : (
+          <div className='flex gap-4 overflow-x-auto pb-4'>
             {STATUSES.map(status => (
                 <KanbanColumn
                 key={status}
@@ -102,7 +113,8 @@ export default function KanbanBoard() {
                 onCardClick={setSelectedApp} // Open edit modal when a card is clicked
                 />
             ))}
-        </div>
+          </div>
+        )}
 
         {/* Add Application Modal */}
         {showAddModal && (
