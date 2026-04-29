@@ -6,7 +6,7 @@ import StatsPage from './pages/StatsPage'
 
 // Inner component so it can access useAuth() (must be inside AuthProvider)
 function AppShell() {
-  const { token, logout } = useAuth()
+  const { token, user, logout } = useAuth()
   const [view, setView] = useState('kanban')  // 'kanban' or 'stats'
 
   // If no token, show the login/register page
@@ -53,6 +53,16 @@ function AppShell() {
           </div>
         </div>
       </nav>
+
+      {/* Welcome banner */}
+      {user && (
+        <div className='max-w-7xl mx-auto px-6 pt-6'>
+          <p className='text-[#1a1a2e] font-semibold text-lg'>
+            Welcome back, {user.name.split(' ')[0]} 👋
+          </p>
+          <p className='text-gray-400 text-sm'>Here's your job search at a glance.</p>
+        </div>
+      )}
 
       {/* Page content */}
       <main className='max-w-7xl mx-auto px-6 py-8'>

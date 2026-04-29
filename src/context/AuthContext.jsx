@@ -1,33 +1,54 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
-// Create the context object - components read from this via useAuth()
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-    // Iniitialize token from localStorage so refresh does not log user out
-    const [token, setToken] = useState(localStorage.getItem('token'))
+  const [token, setToken] = useState(localStorage.getItem('token'))
+  const [user, setUser] = useState(null)
 
-    // Call this after a successful login/register - persists token and triggers re-render
-    function login(newToken) {
-        localStorage.setItem('token', newToken)
-        setToken(newToken)
+  // Fetch user info whenever we have a token
+  useEffect(() => {
+    if (!token) {
+      setUser(null)
+      return
     }
 
-    // Clears token from storage and state - redirects handled by App.jsx reacting to token becoming null
-    function logout() {
-        localStorage.removeItem('token')
-        setToken(null)
+    async function fetchUser() {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/auth/me`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        if (!res.ok) throw new Error()
+        const data = await res.json()
+        setUser(data)
+      } catch {
+        // Token is invalid or expired — log out cleanly
+        logout()
+      }
     }
 
-    return (
-        // Expose token, login, and logout to every component inside the provider 
-        <AuthContext.Provider value={{ token, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    )
+    fetchUser()
+  }, [token])
+
+  function login(newToken) {
+    localStorage.setItem('token', newToken)
+    setToken(newToken)
+  }
+
+  function logout() {
+    localStorage.removeItem('token')
+    setToken(null)
+    setUser(null)
+  }
+
+  return (
+    <AuthContext.Provider value={{ token, user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
-// Custom hook - components call useAuth() instead of importing AuthContext directly
 export function useAuth() {
-    return useContext(AuthContext)
+  return useContext(AuthContext)
 }

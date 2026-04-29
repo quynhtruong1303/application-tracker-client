@@ -16,6 +16,7 @@ export default function KanbanBoard() {
   const [showAddModal, setShowAddModal] = useState(false)
   // Tracks which application is open in the edit modal (null if none)
   const [selectedApp, setSelectedApp] = useState(null)
+  const [searchTerm, setSearchTerm] = useState('')
 
   const isMobile = useMediaQuery('(max-width: 1024px)')
 
@@ -81,23 +82,40 @@ export default function KanbanBoard() {
     </div>
   )
 
+  // Filter applications by company or role based on search term
+  const filteredApplications = applications.filter(app =>
+    app.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    app.role.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
   return (
     <>
         {/* Toolbar */}
-        <div className='flex justify-between items-center mb-6'>
+        <div className='flex flex-col gap-3 mb-6'>
+          <div className='flex justify-between items-center'>
             <h2 className='text-xl font-semibold text-[#1a1a2e]'>My Applications</h2>
             <button
-                onClick={() => setShowAddModal(true)}
-                className='bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium px-5 py-2.5 rounded-full transition-colors'
+              onClick={() => setShowAddModal(true)}
+              className='bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium px-5 py-2.5 rounded-full transition-colors'
             >
-                + Add Application
+              + Add Application
             </button>
+          </div>
+          {/* Search input */}
+          <input
+            type='text'
+            placeholder='Search by company or role...'
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className='border border-gray-200 rounded-full px-4 py-2 text-sm text-[#1a1a2e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 w-full'
+          />
         </div>
+
 
         {/* Kanban layout - columns on desktop, drawers on mobile */}
         {isMobile ? (
           <MobileBoard
-            applications={applications}
+            applications={filteredApplications}
             onCardClick={setSelectedApp}
             onMove={handleDrop}
           />
@@ -108,7 +126,7 @@ export default function KanbanBoard() {
                 key={status}
                 status={status}
                 // Filter applciaitons belonging to this column
-                applications={applications.filter(app => app.status === status)}
+                applications={filteredApplications.filter(app => app.status === status)}
                 onDrop={handleDrop}
                 onCardClick={setSelectedApp} // Open edit modal when a card is clicked
                 />
