@@ -17,7 +17,7 @@ export default function KanbanBoard() {
   // Tracks which application is open in the edit modal (null if none)
   const [selectedApp, setSelectedApp] = useState(null)
 
-  const isMobile = useMediaQuery('(max-width: 640px)')
+  const isMobile = useMediaQuery('(max-width: 1024px)')
 
   // Fetch all applications on mount
   useEffect(() => {
