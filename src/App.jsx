@@ -48,7 +48,7 @@ function AppShell() {
               onClick={logout}
               className='text-sm text-gray-500 hover:text-red-500 transition-colors'
             >
-              Logout
+              Log out
             </button>
           </div>
         </div>
