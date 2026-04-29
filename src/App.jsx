@@ -3,11 +3,12 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import AuthPage from './pages/AuthPage'
 import KanbanPage from './pages/KanbanPage'
 import StatsPage from './pages/StatsPage'
+import CompanyNotesPage from './pages/CompanyNotesPage'
 
 // Inner component so it can access useAuth() (must be inside AuthProvider)
 function AppShell() {
   const { token, user, logout } = useAuth()
-  const [view, setView] = useState('kanban')  // 'kanban' or 'stats'
+  const [view, setView] = useState('kanban')  // 'kanban' || 'stats' || 'notes'
 
   // If no token, show the login/register page
   if (!token) return <AuthPage />
@@ -43,10 +44,20 @@ function AppShell() {
               >
                 Stats
               </button>
+              <button
+                onClick={() => setView('notes')}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                  view === 'notes'
+                    ? 'bg-white text-[#1a1a2e] shadow-sm'
+                    : 'text-gray-500 hover:text-[#1a1a2e]'
+                }`}
+              >
+                Notes
+              </button>
             </div>
             <button
               onClick={logout}
-              className='text-sm text-gray-500 hover:text-red-500 transition-colors'
+              className='text-sm text-gray-500 hover:text-red-500 transition-colors cursor-pointer'
             >
               Log out
             </button>
@@ -66,7 +77,7 @@ function AppShell() {
 
       {/* Page content */}
       <main className='max-w-7xl mx-auto px-6 py-8'>
-        {view === 'kanban' ? <KanbanPage /> : <StatsPage />}
+        {view === 'kanban' ? <KanbanPage /> : view === 'stats' ? <StatsPage /> : <CompanyNotesPage />}
       </main>
     </div>
   )

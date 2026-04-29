@@ -27,7 +27,7 @@ export default function CompanyNoteCard({ note, onClick }) {
                     {filledSections.map(s => (
                         <div key={s.key}>
                             <p className="text-xs font-medium text-indigo-500 uppercase tracking-wide">{s.label}</p>
-                            <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{note[s.key]}</p>
+                            <p className="text-xs text-gray-500 line-clamp-3 whitespace-pre-line mt-0.5">{note[s.key]}</p>
                         </div>
                     ))}
                 </div>

@@ -10,6 +10,7 @@ export default function CompanyNotesPage() {
     const [error, setError] = useState(null)
     const [showAddModal, setShowAddModal] = useState(false)
     const [selectedNote, setSelectedNote] = useState(null)
+    const [searchTerm, setSearchTerm] = useState('')
 
     useEffect(() => {
         getCompanyNotes()
@@ -45,6 +46,11 @@ export default function CompanyNotesPage() {
         </div>
     )
 
+    const filteredNotes = notes.filter(n =>
+        n.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+
+
     return (
         <div className="max-w-6xl mx-auto px-4 py-8">
             {/* Toolbar */}
@@ -58,15 +64,28 @@ export default function CompanyNotesPage() {
                 </button>
             </div>
 
+            {/* Search input */}
+            <input
+                type="text"
+                placeholder="Search by company..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition mb-6"
+            />
+
             {/* Empty state */}
             {notes.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-64 text-gray-400">
                     <p className="text-lg font-medium mb-1">No company notes yet</p>
                     <p className="text-sm">Add your first note to start tracking companies</p>
                 </div>
+            ) : filteredNotes.length === 0 ? (
+                <div className="flex justify-center items-center h-64 text-gray-400">
+                    <p className="text-sm">No companies match your search</p>
+                </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {notes.map(note => (
+                    {filteredNotes.map(note => (
                         <CompanyNoteCard
                             key={note._id}
                             note={note}
