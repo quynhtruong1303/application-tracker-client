@@ -38,7 +38,10 @@ export default function KanbanColumn({ status, applications, onDrop, onCardClick
             {/* Cards container */}
             <div className='flex flex-col gap-3 p-3 flex-1'>
                 {applications.length === 0 ? (
-                    <p className='text-xs text-gray-400 text-center mt-4'>No applications</p>
+                    <div className='flex flex-col items-center justify-center mt-4 p-4 rounded-xl border-2 border-dashed border-gray-200 text-gray-400'>
+                        <p className='text-xs'>No applications</p>
+                        <p className='text-xs'>Drop a card here</p>
+                    </div>
                 ) : (
                     applications.map(app => (
                         <ApplicationCard key={app._id} application={app} onClick={() => onCardClick(app)} />

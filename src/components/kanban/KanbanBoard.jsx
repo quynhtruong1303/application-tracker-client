@@ -65,8 +65,17 @@ export default function KanbanBoard() {
     setApplications(prev => prev.filter(app => app._id !== deletedId))
   }
 
-  if (loading) return <p className='text-gray-400 text-sm'>Loading...</p>
-  if (error) return <p className='text-red-500 text-sm'>Error: {error}</p>
+  if (loading) return (
+    <div className='flex justify-center items-center h-64 text-gray-400'>
+      Loading...
+    </div>
+  )
+
+  if (error) return (
+    <div className='flex justify-center items-center h-64 text-red-400'>
+      {error}
+    </div>
+  )
 
   return (
     <>
