@@ -12,8 +12,8 @@ A personal job search management tool. Track applications on a Kanban board, vie
 - **React 19** + **Vite**
 - **Tailwind CSS v4** (via `@tailwindcss/vite` plugin)
 - **Inter** font (Google Fonts)
-- No router library — view switching via `useState`
-- No drag-and-drop library — native HTML5 drag-and-drop API
+- View switching via `useState`
+- Native HTML5 drag-and-drop API
 
 ---
 
@@ -26,44 +26,6 @@ A personal job search management tool. Track applications on a Kanban board, vie
 - **Company notes** — store background, interview tips, contacts, and general notes per company
 - **JWT authentication** — register and login, data scoped per user
 - **Responsive design** — automatic layout switch at 1024px
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js v18+
-- The [backend API](https://github.com/quynhtruong1303/application-tracker-api) running locally or deployed
-
-### Installation
-
-```bash
-cd application-tracker-client
-npm install
-```
-
-### Environment Variables
-
-Create a `.env` file in the root of `application-tracker-client`:
-
-```
-VITE_API_URL=http://localhost:3000
-```
-
-To point at the deployed backend instead:
-
-```
-VITE_API_URL=https://application-tracker-api-saz8.onrender.com
-```
-
-### Running Locally
-
-```bash
-npm run dev
-```
-
-App runs at `http://localhost:5173`.
 
 ---
 
@@ -107,16 +69,6 @@ src/
     └── stats/
         └── StatsCard.jsx             # Single stat tile
 ```
-
----
-
-## Deployment
-
-Deployed on **Render** as a static site.
-
-- **Build command:** `npm run build`
-- **Publish directory:** `dist`
-- **Environment variable:** set `VITE_API_URL` to the deployed backend URL in the Render dashboard
 
 ---
 
